@@ -9,6 +9,12 @@
 
     let Empty = {L=Stack.New; H=Stack.emptyValue; R=Stack.New}
 
+    let Display tape =
+        let left = tape.L |> List.rev |> List.map (fun x -> sprintf "%A" x)
+        let head = [sprintf "(%A)" tape.H]
+        let right = tape.R |> List.map (fun x -> sprintf "%A" x)
+        String.concat "" (left |> List.append head |> List.append right)
+
     let New input =
         let (h, l) = input |> List.rev |> LPop
         {L=l; H=h; R=Stack.New}

@@ -1,4 +1,4 @@
-﻿open App
+﻿open Test
 
 [<EntryPoint>]
 let main argv =

@@ -51,6 +51,7 @@
     <Compile Include="Stack.fs" />
     <Compile Include="Tape.fs" />
     <Compile Include="App.fs" />
+    <Compile Include="Test.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />
   </ItemGroup>
