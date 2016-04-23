@@ -18,6 +18,7 @@
         Test "" id [] "id"
         Test "0" id [0] "id"
         Test "1" id [1] "id"
+        Test "1001001" id [I;O;O;I;O;O;I] "id"
         Test "0" Pop (O, []) "Pop"
         Test "0101" Pop (O,[I;O;I]) "Pop"
         Test "101" (Push I) [I;I;O;I] "Push 1"
