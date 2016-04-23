@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.fs" />
     <Compile Include="Stack.fs" />
+    <Compile Include="Tape.fs" />
     <Compile Include="App.fs" />
     <Compile Include="Program.fs" />
     <None Include="App.config" />

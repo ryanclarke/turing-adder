@@ -2,5 +2,5 @@
 
 [<EntryPoint>]
 let main argv =
-    argv |> TestRun
+    argv |> RunTest
     0 // return an integer exit code
