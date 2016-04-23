@@ -1,42 +1,41 @@
-﻿// Learn more about F# at http://fsharp.org
-// See the 'F# Tutorial' project for more help.
+﻿module EndlessStack
+    open System
 
-module EndlessStack
-    type MachineValue = 
-        | NADA = 0
-        | WITH = 1
-    type T = StackContents of MachineValue list
-
-    let WITH = MachineValue.WITH
-    let NADA = MachineValue.NADA
+    let I = 1
+    let O = 0
     
-    let defaultValue = NADA
-    let (StackContents emptyStack) = StackContents []
+    let emptyValue = O
+    let emptyStack = []
 
     let New = emptyStack
 
-    let Push x (StackContents stack) = List.append x stack
-    let Pop (StackContents stack) =
+    let Push x stack = x::stack
+    let Pop stack =
         match stack with
         | top::rest -> (top, rest)
-        | [] -> (defaultValue, emptyStack)
-
-    let ToList (StackContents stack) : MachineValue list = stack
+        | [] -> (emptyValue, emptyStack)
 
     let AppRun args =
-        Seq.cast<MachineValue> args |> Seq.toList |> StackContents
+        args
+
+    let Explode (s:string) =
+        [for c in s -> c.ToString() |> Int32.Parse]
 
     let Test input test =
-        AppRun input |> test |> printfn "%b"
+        input
+        |> Explode
+        |> AppRun
+        |> test
+        |> printfn "%b"
 
     let TestRun args =
-         Test [] (ToList >> List.isEmpty)
-         Test [0] (fun x -> x |> ToList |> List.length = 1)
-         Test [1] (fun x -> x |> ToList |> List.length = 1)
-         Test [0] (fun x -> Pop x = (NADA, emptyStack))
-         Test [0;1;0;1] (fun x -> Pop x = (NADA, [WITH;NADA;WITH]))
+        Test "" (List.isEmpty)
+        Test "0" (fun x -> x |> List.length = 1)
+        Test "1" (fun x -> x |> List.length = 1)
+        Test "0" (fun x -> Pop x = (O, emptyStack))
+        Test "0101" (fun x -> Pop x = (O, [I;O;I]))
 
     [<EntryPoint>]
     let main argv =
-        argv |> Array.toList |> TestRun
+        argv |> TestRun
         0 // return an integer exit code
