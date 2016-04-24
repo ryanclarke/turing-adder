@@ -7,21 +7,8 @@
 
     let New = emptyStack
 
-    let RPush x stack = x::stack
-    let RPop stack =
+    let Push x stack = x::stack
+    let Pop stack =
         match stack with
         | top::rest -> (top, rest)
         | [] -> (emptyValue, emptyStack)
-
-    let LPush x stack =
-        stack
-        |> List.rev
-        |> RPush x
-        |> List.rev
-
-    let LPop stack =
-        let head, left =
-            match List.rev stack with
-            | top::rest -> (top, rest)
-            | [] -> (emptyValue, emptyStack)
-        (head, List.rev left)
