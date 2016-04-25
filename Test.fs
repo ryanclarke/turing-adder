@@ -37,12 +37,15 @@
         TapeTest "1001" (GoRight) {L=[1;0;0;1]; H=0; R=[]} "GoRight"
         TapeTest "1001" (GoRight >> GoRight) {L=[0;1;0;0;1]; H=0; R=[]} "GoRight x2"
 
+    let MachineTestRunner rules data state accept =
+        let start = AppRun data
+        let (success, finish) = Machine.Run accept rules state start
+        printfn "<%A> - %A -> %A" success (Display start) (Display finish)
+
     let RunMachineTests args =
         printfn "\n%s" "Machine Tests"
-        let rule = NewRule 0 1 GoLeft
-        let start = AppRun "1010"
-        let (success, finish) = Machine.Run [rule.Next] [rule] rule.State start
-        printfn "<%A> - %A -> %A" success (Display start) (Display finish)
+        MachineTestRunner [CreateRule (Write, 1, "a", "b")] "1010" "a" ["b"]
+        MachineTestRunner (CreateRules [(Read, 0, "a", "a");(Read, 1, "a", "b")]) "01100" "a" ["b"]
 
     let RunTest args =
         RunStackTests args
