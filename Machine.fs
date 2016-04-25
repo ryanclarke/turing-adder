@@ -20,13 +20,20 @@
     let CreateRules rules : Rule list =
         List.map CreateRule rules
 
-    let rec Run acceptStates rules state tape =
-        match acceptStates |> List.contains state with
-        | true -> (true, tape)
-        | false ->
-            let rs = rules |> List.tryFind (fun x -> x.Value = tape.H && x.State = state)
-            match rs with
-            | None -> (false, tape)
-            | Some rule ->
-                Run acceptStates rules rule.Next (rule.Move {tape with H=rule.Write})
+    let Run acceptStates rules state tape =
+        let isAccepted (state:string) =
+            acceptStates
+            |> List.contains state
+        let findRules state tape =
+            rules
+            |> List.tryFind (fun x -> x.Value = tape.H && x.State = state)
+        let rec execute state tape =
+            match state |> isAccepted with
+            | true -> (true, tape)
+            | false ->
+                match findRules state tape with
+                | None -> (false, tape)
+                | Some rule ->
+                    execute rule.Next (rule.Move {tape with H=rule.Write})
+        execute state tape
 
