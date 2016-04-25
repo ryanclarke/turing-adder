@@ -2,14 +2,6 @@
     open Tape
     open System
 
-    type Direction =
-        | Left
-        | Right
-
-    type RuleType =
-        | Read
-        | Write
-
     type Rule = {
         State: string;
         Next: string;
@@ -17,30 +9,13 @@
         Write: int;
         Move: Tape -> Tape}
 
-    let DefaultRule = {
-        State=(Guid.NewGuid().ToString());
-        Next=(Guid.NewGuid().ToString());
-        Value=0;
-        Write=0;
-        Move=GoLeft}
-
-    let NewRule value write move =
-        {DefaultRule with
+    let CreateRule rule =
+        let state, next, value, write, move = rule
+        {    State=state;
+            Next=next;
             Value=value;
             Write=write;
             Move=move}
-
-    let CreateRule rule =
-        let action, value, state, next = rule
-        let basic = {
-            State=state;
-            Next=next;
-            Value=value;
-            Write=value;
-            Move=GoLeft}
-        match action with
-        | Read -> basic
-        | Write -> {basic with Value=0}
 
     let CreateRules rules : Rule list =
         List.map CreateRule rules

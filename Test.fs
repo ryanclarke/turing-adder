@@ -37,17 +37,29 @@
         TapeTest "1001" (GoRight) {L=[1;0;0;1]; H=0; R=[]} "GoRight"
         TapeTest "1001" (GoRight >> GoRight) {L=[0;1;0;0;1]; H=0; R=[]} "GoRight x2"
 
-    let MachineTestRunner rules data state accept =
+    let MachineTestRunner rules data state accept answer=
         let start = AppRun data
         let (success, finish) = Machine.Run accept rules state start
-        printfn "<%A> - %A -> %A" success (Display start) (Display finish)
+        let pass = Display finish = answer
+        match pass with
+        | true -> printfn "<T> - %A -> %A" (Display start) (Display finish)
+        | false -> printfn "<F>>> %A -> %A <<< %A >>>" (Display start) answer (Display finish)
 
     let RunMachineTests args =
         printfn "\n%s" "Machine Tests"
-        MachineTestRunner [CreateRule (Write, 1, "a", "b")] "1010" "a" ["b"]
-        MachineTestRunner (CreateRules [(Read, 0, "a", "a");(Read, 1, "a", "b")]) "01100" "a" ["b"]
+        MachineTestRunner [CreateRule ("a", "b", 0, 1, id)] "1010" "a" ["b"] "101(1)"
+        MachineTestRunner (CreateRules [("a", "a", 0, 0, GoLeft);("a", "b", 1, 1, id)]) "1100" "a" ["b"] "1(1)00"
+
+    let RunAdder1BitTests args =
+        printfn "\n%s" "Adder (1Bit) Tests"
+        let adder1bit = App.RulsetAdder1Bit ()
+        MachineTestRunner adder1bit "000" "a0" ["a0x"] "(0)000"
+        MachineTestRunner adder1bit "001" "a0" ["a0x"] "(0)101"
+        MachineTestRunner adder1bit "010" "a0" ["a0x"] "(0)110"
+        MachineTestRunner adder1bit "011" "a0" ["a0x"] "(0)100011"
 
     let RunTest args =
         RunStackTests args
         RunTapeTests args
         RunMachineTests args
+        RunAdder1BitTests args
