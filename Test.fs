@@ -50,16 +50,38 @@
         MachineTestRunner [CreateRule ("a", "b", 0, 1, id)] "1010" "a" ["b"] "101(1)"
         MachineTestRunner (CreateRules [("a", "a", 0, 0, GoLeft);("a", "b", 1, 1, id)]) "1100" "a" ["b"] "1(1)00"
 
+    let AdderTestRunner data =
+        MachineTestRunner (CreateNBitAdderRuleset data) data
+
     let RunAdder1BitTests args =
         printfn "\n%s" "Adder (1Bit) Tests"
-        let adder1bit = App.RulsetAdder1Bit ()
-        MachineTestRunner adder1bit "000" "a0" ["a0x"] "(0)000"
-        MachineTestRunner adder1bit "001" "a0" ["a0x"] "(0)101"
-        MachineTestRunner adder1bit "010" "a0" ["a0x"] "(0)110"
-        MachineTestRunner adder1bit "011" "a0" ["a0x"] "(0)100011"
+        AdderTestRunner "000" "a00" ["done"] "(0)000000"
+        AdderTestRunner "001" "a00" ["done"] "(0)000101"
+        AdderTestRunner "010" "a00" ["done"] "(0)000110"
+        AdderTestRunner "011" "a00" ["done"] "(0)100011"
+
+    let RunAdder2BitTests args =
+        printfn "\n%s" "Adder (nBit) Tests"
+        AdderTestRunner "000000" "a00" ["done"] "(0)000000000"
+        AdderTestRunner "000001" "a00" ["done"] "(0)000000101"
+        AdderTestRunner "000010" "a00" ["done"] "(0)000000110"
+        AdderTestRunner "000011" "a00" ["done"] "(0)000100011"
+        AdderTestRunner "001000" "a00" ["done"] "(0)000101000"
+        AdderTestRunner "001001" "a00" ["done"] "(0)000101101"
+        AdderTestRunner "001010" "a00" ["done"] "(0)000101110"
+        AdderTestRunner "001011" "a00" ["done"] "(0)100001011"
+        AdderTestRunner "010000" "a00" ["done"] "(0)000110000"
+        AdderTestRunner "010001" "a00" ["done"] "(0)000110101"
+        AdderTestRunner "010010" "a00" ["done"] "(0)000110110"
+        AdderTestRunner "010011" "a00" ["done"] "(0)100010011"
+        AdderTestRunner "011000" "a00" ["done"] "(0)100011000"
+        AdderTestRunner "011001" "a00" ["done"] "(0)100011101"
+        AdderTestRunner "011010" "a00" ["done"] "(0)100011110"
+        AdderTestRunner "011011" "a00" ["done"] "(0)100111011"
 
     let RunTest args =
         RunStackTests args
         RunTapeTests args
         RunMachineTests args
         RunAdder1BitTests args
+        RunAdder2BitTests args

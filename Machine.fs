@@ -1,7 +1,8 @@
 ﻿module Machine
     open Tape
     open System
-
+    
+    [<StructuredFormatDisplay("({Sate}, {Next}, {Value}, {Write}, {Move})")>]
     type Rule = {
         State: string;
         Next: string;
