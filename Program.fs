@@ -5,7 +5,10 @@ let main argv =
     | [] ->
         Test.RunTests args
         0
-    | [a; b] ->
-        App.Run a b
+    | ["b"; a; b] ->
+        App.Run b a
+        0
+    | ["d"; a; b] ->
+        App.RunDecimal b a
         0
     | x -> 1

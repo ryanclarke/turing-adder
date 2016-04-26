@@ -22,6 +22,7 @@
         |> CreateRules
 
     let CreateNBitAdderRuleset (data:Tape) =
+        let hex (i:int) = System.Convert.ToString(i, 16)
         let bits = (data.L.Length + 1) / 3
         [0..bits] |> List.map (fun bit ->
             RulesetAdder1Bit () |> List.map (fun rule ->
@@ -30,20 +31,20 @@
                     match bit = bits && rule.Next = "a0" with
                     | false ->
                         {rule with
-                            State=(sprintf "%s%d" rule.State bit);
-                            Next=(sprintf "%s%d" rule.Next (bit + 1))}
+                            State=(sprintf "%s%s" rule.State (hex bit));
+                            Next=(sprintf "%s%s" rule.Next (hex (bit + 1)))}
                     | true ->
                         {rule with
-                            State=(sprintf "%s%d" rule.State bit);
+                            State=(sprintf "%s%s" rule.State (hex bit));
                             Next="done"}
                 | x ->
                     {rule with
-                        State=(sprintf "%s%d" rule.State bit);
-                        Next=(sprintf "%s%d" rule.Next bit)}))
+                        State=(sprintf "%s%s" rule.State (hex bit));
+                        Next=(sprintf "%s%s" rule.Next (hex bit))}))
         |> List.concat
 
     let Explode (s:string) =
-        [for c in s -> c.ToString() |> System.Int32.Parse]
+        [for c in s -> c.ToString() |> int]
 
     let ToTape s = Explode s |> Tape.New
 
@@ -53,13 +54,29 @@
         List.fold2 doit "" (toList a) (toList b)
         |> ToTape
 
-    let Run a b =
-        let tape = CreateTape a b
+    let Run (a:string) (b:string) =
+        let length = max (a.Length) (b.Length)
+        let eqized (s:string) = s.PadLeft(length, '0')
+        let tape = CreateTape (eqized a) (eqized b)
         let rules = CreateNBitAdderRuleset tape
         let (success, finalTape) = RunVerbose ["done"] rules "a00" {tape with L=(List.append tape.L [0;0;0])}
         let t = finalTape.R |> List.chunkBySize 3
+
+        let extract i = t |> List.map (fun x -> (x.Item i).ToString())
+        let bin is = is |> String.concat ""
+        let dec is = System.Convert.ToInt64(bin is, 2).ToString()
+        let first = extract 2
+        let second = extract 1
+        let answer = extract 0
         printfn "end:  %s\n" (finalTape.R |> List.map (fun x -> sprintf "%d" x) |> String.concat "  ")
-        printfn "1st:        %s" (t |> List.map (fun x -> (x.Item 2).ToString()) |> String.concat "        ")
-        printfn "2nd:     %s" (t |> List.map (fun x -> (x.Item 1).ToString()) |> String.concat "        ")
-        printfn "ans:  %s" (t |> List.map (fun x -> (x.Item 0).ToString()) |> String.concat "        ")
+        printfn "1st:        %s" (first |> String.concat "        ")
+        printfn "2nd:     %s" (second |> String.concat "        ")
+        printfn "ans:  %s" (answer |> String.concat "        ")
+        printfn "\nbin:  %s + %s = %s" (bin first) (bin second) (bin answer)
+        printfn "dec:  %s + %s = %s" (dec first) (dec second) (dec answer)
         printfn "\nSuccess: %b" success
+
+    let RunDecimal a b =
+        let toBinaryString (x:string) = System.Convert.ToString(int x, 2)
+        Run (toBinaryString a) (toBinaryString b)
+        
