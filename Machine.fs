@@ -12,7 +12,7 @@
 
     let CreateRule rule =
         let state, next, value, write, move = rule
-        {    State=state;
+        {State=state;
             Next=next;
             Value=value;
             Write=write;
@@ -35,9 +35,9 @@
                 match findRules state tape with
                 | None -> (false, tape)
                 | Some rule ->
-                    display state tape
+                    display state tape (tape.H = rule.Write)
                     execute rule.Next (rule.Move {tape with H=rule.Write})
         execute state tape
 
-    let Run = RunMachine (fun x y -> ())
+    let Run = RunMachine (fun x y z -> ())
     let RunVerbose = RunMachine PrintTape
