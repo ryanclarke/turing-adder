@@ -21,8 +21,8 @@
         ]
         |> CreateRules
 
-    let CreateNBitAdderRuleset (data:string) =
-        let bits = data.Length / 3
+    let CreateNBitAdderRuleset (data:Tape) =
+        let bits = (data.L.Length + 1) / 3
         [0..bits] |> List.map (fun bit ->
             RulesetAdder1Bit () |> List.map (fun rule ->
                 match rule.State.Substring(0, 1) with
@@ -45,8 +45,14 @@
     let Explode (s:string) =
         [for c in s -> c.ToString() |> System.Int32.Parse]
 
-    let AppRun args =
+    let ToTape args =
         args
         |> Explode
         |> Tape.New
+
+    let CreateTape (a:string) (b:string) =
+        let doit acc x y = sprintf "%s0%c%c" acc x y
+        let toList (s:string) = s.ToCharArray() |> Array.toList
+        List.fold2 doit "" (toList a) (toList b)
+        |> ToTape
 

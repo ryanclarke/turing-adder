@@ -10,9 +10,12 @@
     let Empty = {L=Stack.New; H=Stack.emptyValue; R=Stack.New}
 
     let Display tape =
-        let left = tape.L |> List.rev |> List.map (fun x -> sprintf "%A" x) |> String.concat ""
+        let stringify(l:int list) =
+            List.map (fun x -> sprintf "%A" x) l
+            |> String.concat ""
+        let left = tape.L |> List.rev |> stringify
         let head = tape.H
-        let right = tape.R |> List.map (fun x -> sprintf "%A" x) |> String.concat ""
+        let right = tape.R |> stringify
         sprintf "%s(%d)%s" left head right
 
     let New input =
