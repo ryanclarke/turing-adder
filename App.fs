@@ -45,10 +45,7 @@
     let Explode (s:string) =
         [for c in s -> c.ToString() |> System.Int32.Parse]
 
-    let ToTape args =
-        args
-        |> Explode
-        |> Tape.New
+    let ToTape s = Explode s |> Tape.New
 
     let CreateTape (a:string) (b:string) =
         let doit acc x y = sprintf "%s0%c%c" acc x y
@@ -56,3 +53,12 @@
         List.fold2 doit "" (toList a) (toList b)
         |> ToTape
 
+    let Run a b =
+        let tape = CreateTape a b
+        let rules = CreateNBitAdderRuleset tape
+        let (success, finalTape) = RunVerbose ["done"] rules "a00" {tape with L=(List.append tape.L [0;0;0])}
+        let t = finalTape.R |> List.chunkBySize 3
+        printfn "fst:        %s" (t |> List.map (fun x -> (x.Item 2).ToString()) |> String.concat "        ")
+        printfn "snd:     %s" (t |> List.map (fun x -> (x.Item 1).ToString()) |> String.concat "        ")
+        printfn "ans:  %s" (t |> List.map (fun x -> (x.Item 0).ToString()) |> String.concat "        ")
+        printfn "Success: %b" success

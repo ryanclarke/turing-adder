@@ -21,7 +21,7 @@
     let CreateRules rules : Rule list =
         List.map CreateRule rules
 
-    let Run acceptStates rules state tape =
+    let RunMachine display acceptStates rules state tape =
         let isAccepted (state:string) =
             acceptStates
             |> List.contains state
@@ -35,6 +35,9 @@
                 match findRules state tape with
                 | None -> (false, tape)
                 | Some rule ->
+                    display state tape
                     execute rule.Next (rule.Move {tape with H=rule.Write})
         execute state tape
 
+    let Run = RunMachine (fun x y -> ())
+    let RunVerbose = RunMachine PrintTape

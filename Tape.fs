@@ -16,7 +16,21 @@
         let left = tape.L |> List.rev |> stringify
         let head = tape.H
         let right = tape.R |> stringify
-        sprintf "%s(%d)%s" left head right
+        sprintf "%s(%d)%s " left head right
+
+    let RunDisplay tape =
+        let stringify(l:int list) =
+            List.map (fun x -> sprintf "%A" x) l
+            |> String.concat "  "
+        let left = tape.L |> List.rev |> stringify
+        let head = tape.H
+        let right = tape.R |> stringify
+        let leftPad = if left.Length > 0 then " " else ""
+        let rightPad = if right.Length > 0 then " " else ""
+        sprintf "%s%s%s(%d) %s%s" leftPad left leftPad head right rightPad
+
+    let PrintTape state tape =
+        printfn "%s: %s" state (RunDisplay tape)
 
     let New input =
         let (h, l) = input|> List.rev |> Pop
