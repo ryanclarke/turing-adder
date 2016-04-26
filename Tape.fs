@@ -16,7 +16,7 @@
         let left = tape.L |> List.rev |> stringify
         let head = tape.H
         let right = tape.R |> stringify
-        sprintf "%s(%d)%s " left head right
+        sprintf "%s(%d)%s" left head right
 
     let RunDisplay tape =
         let stringify(l:int list) =
