@@ -26,10 +26,10 @@
         StackTest "" id [] "id"
         StackTest "0" id [0] "id"
         StackTest "1" id [1] "id"
-        StackTest "1001001" id [I;O;O;I;O;O;I] "id"
-        StackTest "0" Pop (O,[]) "Pop"
-        StackTest "0101" Pop (O,[I;O;I]) "Pop"
-        StackTest "101" (Push I) [I;I;0;I] "Push 1"
+        StackTest "1001001" id [1;0;0;1;0;0;1] "id"
+        StackTest "0" Pop (0,[]) "Pop"
+        StackTest "0101" Pop (0,[1;0;1]) "Pop"
+        StackTest "101" (Push 1) [1;1;0;1] "Push 1"
 
     let RunTapeTests args =
         printfn "\n%s" "Tape Tests"

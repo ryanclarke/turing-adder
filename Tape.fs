@@ -7,7 +7,7 @@
         H: int;
         R: int list}
 
-    let Empty = {L=Stack.New; H=Stack.emptyValue; R=Stack.New}
+    let Empty = {L=Stack.New; H=Stack.Default; R=Stack.New}
 
     let Display tape =
         let stringify(l:int list) =
