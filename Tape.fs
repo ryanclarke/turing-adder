@@ -7,8 +7,6 @@
         H: int;
         R: int list}
 
-    let Empty = {L=Stack.New; H=Stack.Default; R=Stack.New}
-
     let Display tape =
         let stringify(l:int list) =
             List.map (fun x -> sprintf "%A" x) l
@@ -27,7 +25,7 @@
         let right = tape.R |> stringify
         let leftPad = if left.Length > 0 then " " else ""
         let rightPad = if right.Length > 0 then " " else ""
-        sprintf "%s%s%s%s %s%s" leftPad left leftPad head right rightPad
+        sprintf "%s%s%s%s%s%s%s" leftPad left leftPad head rightPad right rightPad
 
     let PrintTape state tape isRead=
         printfn "%s: %s" state (RunDisplay tape isRead)
