@@ -22,25 +22,34 @@
         |> CreateRules
 
     let CreateNBitAdderRuleset (data:Tape) =
-        let hex (i:int) = System.Convert.ToString(i, 16)
-        let bits = (data.L.Length + 1) / 3
-        [0..bits] |> List.map (fun bit ->
-            RulesetAdder1Bit () |> List.map (fun rule ->
-                match rule.State.Substring(0, 1) with
-                | "c" ->
-                    match bit = bits && rule.Next = "a0" with
-                    | false ->
-                        {rule with
-                            State=(sprintf "%s%s" rule.State (hex bit));
-                            Next=(sprintf "%s%s" rule.Next (hex (bit + 1)))}
-                    | true ->
-                        {rule with
-                            State=(sprintf "%s%s" rule.State (hex bit));
-                            Next="done"}
-                | x ->
-                    {rule with
-                        State=(sprintf "%s%s" rule.State (hex bit));
-                        Next=(sprintf "%s%s" rule.Next (hex bit))}))
+        let bitCount = (data.L.Length + 1) / 3
+
+        let modifyRule bit rule =
+            let isBitC =
+                rule.State.Substring(0, 1) = "c"
+            let nextRuleFor bit nextBit =
+                let hex (i:int) = System.Convert.ToString(i, 16)
+                let stateFor state bit = sprintf "%s%s" state (hex bit)
+                {rule with
+                    State=(stateFor rule.State bit);
+                    Next=(stateFor rule.Next nextBit)}
+            let ruleFor bit =
+                nextRuleFor bit bit
+            match isBitC with
+            | true ->
+                let isLastBit = bit = bitCount
+                let isFirstRuleWithNoCarry = rule.Next = "a0"
+                let isFinalState = isLastBit && isFirstRuleWithNoCarry
+                match isFinalState with
+                | false -> nextRuleFor bit (bit + 1)
+                | true -> {ruleFor bit with Next="done"}
+            | false -> ruleFor bit
+        let buildBitAdderRuleset bit =
+            RulesetAdder1Bit ()
+            |> List.map (modifyRule bit)
+
+        [0..bitCount]
+        |> List.map buildBitAdderRuleset
         |> List.concat
 
     let Explode (s:string) =
@@ -79,4 +88,3 @@
     let RunDecimal a b =
         let toBinaryString (x:string) = System.Convert.ToString(int x, 2)
         Run (toBinaryString a) (toBinaryString b)
-        

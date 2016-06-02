@@ -111,7 +111,6 @@
         AppTestRunner "1" "0" "(0)000110"
         AppTestRunner "1" "1" "(0)100011"
         AppTestRunner "10100" "01110" "(0)100010001011101000"
-        
 
     let RunTests args =
         RunStackTests args
